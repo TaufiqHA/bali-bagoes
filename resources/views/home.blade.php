@@ -105,7 +105,7 @@
                                 >Rp 299.000</span
                             >
                             <a
-                                href="checkout.html?product=Digital%20Marketing%20Mastery&price=299000"
+                                href="{{ route('checkout') }}"
                                 class="bg-primary hover:bg-blue-600 text-white px-5 py-2 !rounded-button whitespace-nowrap flex items-center"
                             >
                                 <span>Beli Sekarang</span>
@@ -219,7 +219,7 @@
                                 >Rp 499.000</span
                             >
                             <a
-                                href="checkout.html?product=Content%20Management%20Suite&price=499000"
+                                href="{{ route('checkout') }}"
                                 class="bg-primary hover:bg-blue-600 text-white px-5 py-2 !rounded-button whitespace-nowrap flex items-center"
                             >
                                 <span>Beli Sekarang</span>
