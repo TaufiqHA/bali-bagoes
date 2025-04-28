@@ -41,6 +41,14 @@ class ProductsResource extends Resource
                     ->required()
                     ->numeric()
                     ->prefix('Rp'),
+                Forms\Components\TextInput::make('fee_sell')
+                    ->required()
+                    ->numeric()
+                    ->prefix('Rp'),
+                Forms\Components\TextInput::make('fee_partner')
+                    ->required()
+                    ->numeric()
+                    ->prefix('Rp'),
                 Forms\Components\FileUpload::make('file')
                     ->required(),
             ])
@@ -52,13 +60,21 @@ class ProductsResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('name')
+                    ->label('Nama')
                     ->searchable(),
-                Tables\Columns\ImageColumn::make('pictures'),
+                Tables\Columns\ImageColumn::make('pictures')
+                    ->label('Gambar'),
                 Tables\Columns\TextColumn::make('price')
-                    ->money()
+                    ->label('Harga')
+                    ->money('idr')
                     ->sortable(),
-                Tables\Columns\TextColumn::make('price_correct')
-                    ->numeric()
+                Tables\Columns\TextColumn::make('fee_sell')
+                    ->label('Fee Jual')
+                    ->money('idr')
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('fee_partner')
+                    ->label('Fee Partner')
+                    ->money('idr')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
