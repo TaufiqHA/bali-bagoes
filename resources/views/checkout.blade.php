@@ -82,7 +82,7 @@
                         >
                             <img
                                 id="productImage"
-                                src=""
+                                src="{{ asset('storage/' . $product->pictures) }}"
                                 alt=""
                                 class="w-full h-full object-cover object-top"
                             />
@@ -96,10 +96,7 @@
                                 id="productDescription"
                                 class="text-gray-600 text-sm mb-3"
                             >
-                                Panduan lengkap untuk memulai bisnis kuliner
-                                khas Bali. Termasuk 50+ resep autentik, tips
-                                pengelolaan bisnis, dan strategi pemasaran
-                                digital.
+                                {{ $product->descriptions }}
                             </p>
                             <p
                                 id="productPrice"
@@ -206,7 +203,10 @@
                 </div>
                 <div class="border-t pt-8">
                     <div class="flex justify-between items-center mb-6">
-                        <span class="text-gray-600">Total Pembayaran</span>
+                        <div class="w-full flex justify-between items-center">
+                            <span class="text-gray-600">Total Pembayaran</span>
+                            <span class="text-primary text-lg font-bold">Rp {{ number_format($product->price, '0', ',', '.') }}</span>
+                        </div>
                         <span
                             id="totalPrice"
                             class="text-2xl font-bold text-primary"
