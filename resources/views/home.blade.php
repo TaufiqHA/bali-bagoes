@@ -102,7 +102,7 @@
                                 >Rp {{ number_format($product->price, 0, ',', '.') }}</span
                             >
                             <a
-                                href="{{ route('checkout', ['product' => $product->id]) }}"
+                                href="{{ route('checkout', ['id' => $product->id]) }}"
                                 class="bg-primary hover:bg-blue-600 text-white px-5 py-2 !rounded-button whitespace-nowrap flex items-center"
                             >
                                 <span>Beli Sekarang</span>

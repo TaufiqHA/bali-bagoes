@@ -66,192 +66,118 @@
             </div>
         </nav>
         <main class="container mx-auto px-4 md:px-8 max-w-4xl py-16 mt-16">
-            <div class="bg-white rounded-lg shadow-lg p-8">
-                <div class="flex items-center mb-8">
-                    <div
-                        class="w-8 h-8 flex items-center justify-center bg-primary text-white rounded-full mr-3"
-                    >
-                        1
-                    </div>
-                    <h2 class="text-2xl font-semibold">Detail Pesanan</h2>
-                </div>
-                <div class="bg-gray-50 rounded-lg p-6 mb-8">
-                    <div class="flex items-start">
-                        <div
-                            class="product-image w-24 h-24 rounded overflow-hidden mr-4"
-                        >
-                            <img
-                                id="productImage"
-                                src="{{ asset('storage/' . $product->pictures) }}"
-                                alt=""
-                                class="w-full h-full object-cover object-top"
-                            />
-                        </div>
-                        <div class="flex-1">
-                            <h3
-                                id="productName"
-                                class="text-xl font-semibold mb-2"
-                            ></h3>
-                            <p
-                                id="productDescription"
-                                class="text-gray-600 text-sm mb-3"
-                            >
-                                {{ $product->descriptions }}
-                            </p>
-                            <p
-                                id="productPrice"
-                                class="text-primary text-xl font-bold"
-                            ></p>
-                        </div>
-                    </div>
-                </div>
-                <div class="mb-12">
+            <form method="post" action="{{ route('checkout.process', $product->id) }}">
+                @csrf
+                <div class="bg-white rounded-lg shadow-lg p-8">
                     <div class="flex items-center mb-8">
                         <div
                             class="w-8 h-8 flex items-center justify-center bg-primary text-white rounded-full mr-3"
                         >
-                            2
+                            1
                         </div>
-                        <h2 class="text-2xl font-semibold">
-                            Informasi Pembeli
-                        </h2>
+                        <h2 class="text-2xl font-semibold">Detail Pesanan</h2>
                     </div>
-                    <form id="checkoutForm" class="space-y-6">
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div>
-                                <label
-                                    class="block text-sm font-medium text-gray-700 mb-2"
-                                    >Nama Lengkap</label
-                                >
-                                <input
-                                    type="text"
-                                    required
-                                    class="w-full px-4 py-3 rounded border-gray-200 focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
-                                    placeholder="Masukkan nama lengkap"
+                    <div class="bg-gray-50 rounded-lg p-6 mb-8">
+                        <div class="flex items-start">
+                            <div
+                                class="product-image w-24 h-24 rounded overflow-hidden mr-4"
+                            >
+                                <img
+                                    id="productImage"
+                                    src="{{ asset('storage/' . $product->pictures) }}"
+                                    alt=""
+                                    class="w-full h-full object-cover object-top"
                                 />
                             </div>
-                            <div>
-                                <label
-                                    class="block text-sm font-medium text-gray-700 mb-2"
-                                    >Email</label
+                            <div class="flex-1">
+                                <h3
+                                    id="productName"
+                                    class="text-xl font-semibold mb-2"
+                                ></h3>
+                                <p
+                                    id="productDescription"
+                                    class="text-gray-600 text-sm mb-3"
                                 >
-                                <input
-                                    type="email"
-                                    required
-                                    class="w-full px-4 py-3 rounded border-gray-200 focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
-                                    placeholder="Masukkan email"
-                                />
-                            </div>
-                            <div>
-                                <label
-                                    class="block text-sm font-medium text-gray-700 mb-2"
-                                    >Nomor WhatsApp</label
-                                >
-                                <input
-                                    type="tel"
-                                    required
-                                    class="w-full px-4 py-3 rounded border-gray-200 focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
-                                    placeholder="Contoh: 08123456789"
-                                />
+                                    {{ $product->descriptions }}
+                                </p>
+                                <p
+                                    id="productPrice"
+                                    class="text-primary text-xl font-bold"
+                                ></p>
                             </div>
                         </div>
-                    </form>
-                </div>
-                <div class="mb-12">
-                    <div class="flex items-center mb-8">
-                        <div
-                            class="w-8 h-8 flex items-center justify-center bg-primary text-white rounded-full mr-3"
-                        >
-                            3
-                        </div>
-                        <h2 class="text-2xl font-semibold">
-                            Metode Pembayaran
-                        </h2>
                     </div>
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <button
-                            class="payment-method flex items-center justify-center p-4 border-2 border-gray-200 rounded-lg hover:border-primary focus:border-primary focus:outline-none transition-colors"
-                        >
+                    <div class="mb-12">
+                        <div class="flex items-center mb-8">
                             <div
-                                class="w-6 h-6 flex items-center justify-center mr-2"
+                                class="w-8 h-8 flex items-center justify-center bg-primary text-white rounded-full mr-3"
                             >
-                                <i class="ri-bank-card-fill text-2xl"></i>
+                                2
                             </div>
-                            <span>Bank Transfer</span>
-                        </button>
+                            <h2 class="text-2xl font-semibold">
+                                Informasi Pembeli
+                            </h2>
+                        </div>
+                        <form id="checkoutForm" class="space-y-6">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div>
+                                    <label
+                                        class="block text-sm font-medium text-gray-700 mb-2"
+                                        >Nama Lengkap</label
+                                    >
+                                    <input
+                                        type="text"
+                                        name="name"
+                                        id="name"
+                                        required
+                                        class="w-full px-4 py-3 rounded border-gray-200 focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
+                                        placeholder="Masukkan nama lengkap"
+                                    />
+                                </div>
+                                <div>
+                                    <label
+                                        class="block text-sm font-medium text-gray-700 mb-2"
+                                        >Email</label
+                                    >
+                                    <input
+                                        type="email"
+                                        name="email"
+                                        id="email"
+                                        required
+                                        class="w-full px-4 py-3 rounded border-gray-200 focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
+                                        placeholder="Masukkan email"
+                                    />
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="border-t pt-8">
+                        <div class="flex justify-between items-center mb-6">
+                            <div class="w-full flex justify-between items-center">
+                                <span class="text-gray-600">Total Pembayaran</span>
+                                <span class="text-primary text-lg font-bold">Rp {{ number_format($product->price, '0', ',', '.') }}</span>
+                            </div>
+                            <span
+                                id="totalPrice"
+                                class="text-2xl font-bold text-primary"
+                            ></span>
+                        </div>
                         <button
-                            class="payment-method flex items-center justify-center p-4 border-2 border-gray-200 rounded-lg hover:border-primary focus:border-primary focus:outline-none transition-colors"
+                            type="submit"
+                            class="w-full bg-primary hover:bg-blue-600 text-white py-4 !rounded-button text-lg font-semibold flex items-center justify-center whitespace-nowrap"
                         >
+                            <span>Bayar Sekarang</span>
                             <div
-                                class="w-6 h-6 flex items-center justify-center mr-2"
+                                class="w-5 h-5 flex items-center justify-center ml-2"
                             >
-                                <i class="ri-alipay-fill text-2xl"></i>
+                                <i class="ri-arrow-right-line"></i>
                             </div>
-                            <span>QRIS</span>
-                        </button>
-                        <button
-                            class="payment-method flex items-center justify-center p-4 border-2 border-gray-200 rounded-lg hover:border-primary focus:border-primary focus:outline-none transition-colors"
-                        >
-                            <div
-                                class="w-6 h-6 flex items-center justify-center mr-2"
-                            >
-                                <i class="ri-wallet-3-fill text-2xl"></i>
-                            </div>
-                            <span>E-Wallet</span>
                         </button>
                     </div>
                 </div>
-                <div class="border-t pt-8">
-                    <div class="flex justify-between items-center mb-6">
-                        <div class="w-full flex justify-between items-center">
-                            <span class="text-gray-600">Total Pembayaran</span>
-                            <span class="text-primary text-lg font-bold">Rp {{ number_format($product->price, '0', ',', '.') }}</span>
-                        </div>
-                        <span
-                            id="totalPrice"
-                            class="text-2xl font-bold text-primary"
-                        ></span>
-                    </div>
-                    <button
-                        id="payButton"
-                        class="w-full bg-primary hover:bg-blue-600 text-white py-4 !rounded-button text-lg font-semibold flex items-center justify-center whitespace-nowrap"
-                    >
-                        <span>Bayar Sekarang</span>
-                        <div
-                            class="w-5 h-5 flex items-center justify-center ml-2"
-                        >
-                            <i class="ri-arrow-right-line"></i>
-                        </div>
-                    </button>
-                </div>
-            </div>
+            </form>
         </main>
-        <div
-            id="successModal"
-            class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50"
-        >
-            <div class="bg-white rounded-lg p-8 max-w-md w-full mx-4">
-                <div
-                    class="w-16 h-16 mx-auto mb-4 rounded-full bg-green-100 flex items-center justify-center"
-                >
-                    <i class="ri-check-line text-3xl text-green-500"></i>
-                </div>
-                <h3 class="text-2xl font-semibold text-center mb-2">
-                    Pembayaran Berhasil!
-                </h3>
-                <p class="text-gray-600 text-center mb-6">
-                    Terima kasih atas pembelian Anda. Produk digital akan
-                    dikirim ke email Anda dalam waktu 24 jam.
-                </p>
-                <button
-                    onclick="window.location.href='/'"
-                    class="w-full bg-primary hover:bg-blue-600 text-white py-3 !rounded-button whitespace-nowrap"
-                >
-                    Kembali ke Beranda
-                </button>
-            </div>
-        </div>
-        <script>
+        {{-- <script>
             document.addEventListener("DOMContentLoaded", function () {
                 const urlParams = new URLSearchParams(window.location.search);
                 const productName = urlParams.get("product");
@@ -300,6 +226,6 @@
                         }
                     });
             });
-        </script>
+        </script> --}}
     </body>
 </html>
