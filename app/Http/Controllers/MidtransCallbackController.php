@@ -49,28 +49,4 @@ class MidtransCallbackController extends Controller
 
         return response()->json(['message' => 'Callback handled']);
     }
-
-    public function terima(Request $request)
-    {
-        $transaction = Transaction::orderBy('created_at', 'desc')->first();
-
-        if (!$transaction) {
-            return response()->json(['message' => 'Transaction not found'], 404);
-        }
-
-        $password = Str::random(8);
-
-                $user = User::create([
-                    'name' => $transaction->customer_name,
-                    'email' => $transaction->customer_email,
-                    'password' => bcrypt($password),
-                ]);
-
-                Mail::to($user->email)->send(new SendUserPasswordMail($user, $password));
-
-                $transaction->user_id = $user->id;
-                $transaction->save();
-
-        return redirect('/');
-    }
 }

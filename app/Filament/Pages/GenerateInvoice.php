@@ -15,7 +15,7 @@ class GenerateInvoice extends Page
     protected static ?string $navigationIcon = 'heroicon-o-document-text';
     protected static string $view = 'filament.pages.generate-invoice';
     protected static ?string $navigationGroup = 'Invoice Management';
-    protected static ?string $navigationLabel = 'Generate Invoice';
+    protected static ?string $navigationLabel = 'Manual Invoice';
     protected static ?int $navigationSort = 1;
 
     public $product_id;

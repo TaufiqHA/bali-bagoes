@@ -70,7 +70,8 @@
                         Masuk ke Akun Anda
                     </h1>
                 </div>
-                <form id="loginForm" class="space-y-6">
+                <form id="loginForm" class="space-y-6" method="post" action="{{ route('auth.login') }}">
+                    @csrf
                     <div>
                         <label
                             for="email"
@@ -89,6 +90,7 @@
                             </div>
                             <input
                                 type="email"
+                                name="email"
                                 id="email"
                                 required
                                 class="w-full pl-10 pr-4 py-3 rounded border border-gray-300 focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-30 outline-none transition-colors"
@@ -120,6 +122,7 @@
                             </div>
                             <input
                                 type="password"
+                                name="password"
                                 id="password"
                                 required
                                 class="w-full pl-10 pr-10 py-3 rounded border border-gray-300 focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-30 outline-none transition-colors"
@@ -183,35 +186,6 @@
                     } else {
                         passwordIcon.classList.remove("ri-eye-line");
                         passwordIcon.classList.add("ri-eye-off-line");
-                    }
-                });
-
-                // Form validation
-                loginForm.addEventListener("submit", function (e) {
-                    e.preventDefault();
-                    let isValid = true;
-                    // Email validation
-                    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-                    if (!emailPattern.test(emailInput.value)) {
-                        emailError.classList.remove("hidden");
-                        emailInput.classList.add("border-red-500");
-                        isValid = false;
-                    } else {
-                        emailError.classList.add("hidden");
-                        emailInput.classList.remove("border-red-500");
-                    }
-                    // Password validation
-                    if (passwordInput.value.length < 6) {
-                        passwordError.classList.remove("hidden");
-                        passwordInput.classList.add("border-red-500");
-                        isValid = false;
-                    } else {
-                        passwordError.classList.add("hidden");
-                        passwordInput.classList.remove("border-red-500");
-                    }
-                    // If valid, redirect to home page
-                    if (isValid) {
-                        window.location.href = "/";
                     }
                 });
             });
