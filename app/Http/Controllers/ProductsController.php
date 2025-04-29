@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Products;
-use Illuminate\Http\Request;
+use App\Settings\PaymentSettings;
 
 class ProductsController extends Controller
 {
