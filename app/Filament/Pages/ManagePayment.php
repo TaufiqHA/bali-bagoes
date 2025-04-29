@@ -25,9 +25,8 @@ class ManagePayment extends SettingsPage
                 Select::make('gateway')
                     ->label('Pilih Payment Gateway')
                     ->options([
-                        'stripe'    => 'Stripe',
                         'midtrans'  => 'Midtrans',
-                        'ipaymu'    => 'iPayMu',
+                        'xendit'    => 'Xendit',
                         // …tambahkan sesuai kebutuhan
                     ])
                     ->required(),

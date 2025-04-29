@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Products;
 use App\Models\Transaction;
+use App\Settings\PaymentSettings;
 use Illuminate\Http\Request;
 
 class CheckoutController extends Controller
@@ -31,12 +32,15 @@ class CheckoutController extends Controller
 
         $orderId = 'ORDER-' . time();
 
+        $gateway = app(PaymentSettings::class)->gateway;
+
         $transaction = Transaction::create([
             'order_id' => $orderId,
             'product_id' => $product->id,
             'gross_amount' => $product->price,
             'customer_name' => $request->name,
             'customer_email' => $request->email,
+            'gateway' => $gateway,
         ]);
 
         $params = [

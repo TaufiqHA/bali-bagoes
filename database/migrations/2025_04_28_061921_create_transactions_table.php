@@ -19,6 +19,7 @@ return new class extends Migration
             $table->integer('gross_amount');
             $table->string('customer_name');
             $table->string('customer_email');
+            $table->string('gateway');
             $table->timestamps();
 
             // Relasi ke products table (pastikan ada table products)
