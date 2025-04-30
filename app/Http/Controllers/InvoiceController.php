@@ -53,6 +53,8 @@ class InvoiceController extends Controller
 
         $gateway = $request->payment_gateway;
 
+        $invoice = Invoice::find($request->invoice_id);
+
         $transaction = Transaction::create([
             'order_id' => $orderId,
             'product_id' => $product->id,
@@ -84,7 +86,7 @@ class InvoiceController extends Controller
     
             $snapToken = \Midtrans\Snap::getSnapToken($params);
     
-            return view('checkout_payment', compact('snapToken'));
+            return view('checkout_payment', compact('snapToken', 'invoice'));
         } else if($gateway == 'xendit') {
             $externalId = 'order-' . Str::uuid();
 
@@ -105,7 +107,7 @@ class InvoiceController extends Controller
                     'given_names' => $request->name,
                     'email' => $request->email,
                 ],
-                'success_redirect_url' => route('callback.terima'),
+                'success_redirect_url' => route('callback.terima', ['id' => $invoice->id]),
             ];
     
             $invoice = $this->xenditInvoiceApi->createInvoice($params);
@@ -128,7 +130,7 @@ class InvoiceController extends Controller
                 'order' => [
                     'amount' => 20000,
                     'invoice_number' => 'INV-' . now()->format('YmdHis'),
-                    "callback_url" => route('callback.terima'),
+                    "callback_url" => route('callback.terima', ['id' => $invoice->id]),
                 ],
                 'payment' => [
                     'payment_due_date' => 60,

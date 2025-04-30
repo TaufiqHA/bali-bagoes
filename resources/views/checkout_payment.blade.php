@@ -12,7 +12,7 @@
             snap.pay('{{ $snapToken }}', {
                 onSuccess: function(result) {
                     alert("Pembayaran Berhasil!");
-                    window.location.href = '/callback/terima'; // redirect ke halaman sukses kalau mau
+                    window.location.href = "{{ route('callback.terima', ['id' => $invoice->id]) }}"; // redirect ke halaman sukses kalau mau
                 },
                 onPending: function(result) {
                     alert("Pembayaran pending.");

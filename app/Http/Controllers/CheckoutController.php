@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Invoice;
 use App\Models\Order;
 use App\Models\Products;
 use Xendit\Configuration;
@@ -56,6 +57,16 @@ class CheckoutController extends Controller
             'gateway' => $gateway,
         ]);
 
+        $invoice = Invoice::create([
+            'invoice' => $this->generateInvoiceNumber(),
+            'product_id' => $product->id,
+            'transaksi' => $product->price,
+            'office' => $product->fee_sell,
+            'partner' => $product->fee_partner,
+            'jatuh_tempo' => now()->addDay()->format('Y-m-d H:i:s'),
+            'payment_gateway' => $gateway,
+        ]);
+
         if($gateway == 'midtrans') {
             $params = [
                 'transaction_details' => [
@@ -78,7 +89,7 @@ class CheckoutController extends Controller
     
             $snapToken = \Midtrans\Snap::getSnapToken($params);
     
-            return view('checkout_payment', compact('snapToken'));
+            return view('checkout_payment', compact('snapToken', 'invoice'));
         } else if($gateway == 'xendit') {
             $externalId = 'order-' . Str::uuid();
 
@@ -99,7 +110,7 @@ class CheckoutController extends Controller
                     'given_names' => $request->name,
                     'email' => $request->email,
                 ],
-                'success_redirect_url' => route('callback.terima'),
+                'success_redirect_url' => route('callback.terima', ['id' => $invoice->id]),
             ];
     
             $invoice = $this->xenditInvoiceApi->createInvoice($params);
@@ -122,7 +133,7 @@ class CheckoutController extends Controller
                 'order' => [
                     'amount' => 20000,
                     'invoice_number' => 'INV-' . now()->format('YmdHis'),
-                    "callback_url" => route('callback.terima'),
+                    "callback_url" => route('callback.terima', ['id' => $invoice->id]),
                 ],
                 'payment' => [
                     'payment_due_date' => 60,
@@ -167,5 +178,22 @@ class CheckoutController extends Controller
         }
 
         
+    }
+
+    protected function generateInvoiceNumber(): string
+    {
+        $prefix = 'INVFR';
+        $latest = Invoice::where('invoice', 'like', $prefix.'%')
+                    ->orderBy('invoice', 'desc')
+                    ->first();
+        
+        if ($latest) {
+            $lastNumber = (int) str_replace($prefix, '', $latest->invoice);
+            $nextNumber = $lastNumber + 1;
+        } else {
+            $nextNumber = 1;
+        }
+        
+        return $prefix . str_pad($nextNumber, 5, '0', STR_PAD_LEFT);
     }
 }

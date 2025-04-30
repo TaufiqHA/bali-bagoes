@@ -7,11 +7,12 @@ use App\Models\Transaction;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Mail\SendUserPasswordMail;
+use App\Models\Invoice;
 use Illuminate\Support\Facades\Mail;
 
 class callbackController extends Controller
 {
-    public function terima(Request $request)
+    public function terima($id)
     {
         $transaction = Transaction::orderBy('created_at', 'desc')->first();
 
@@ -31,6 +32,10 @@ class callbackController extends Controller
 
                 $transaction->user_id = $user->id;
                 $transaction->save();
+
+        $invoice = Invoice::find($id);
+        $invoice['status'] = 'sukses';
+        $invoice->save();
 
         return view('invoices.success', ['auth' => $user, 'password' => $password]);
     }

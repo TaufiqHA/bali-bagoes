@@ -24,7 +24,7 @@ Route::post('/invoices/checkout/{id}', [InvoiceController::class, 'processChecko
 Route::post('/midtrans/callback', [MidtransCallbackController::class, 'receive']);
 
 // callback
-Route::get('/callback/terima', [callbackController::class, 'terima'])->name('callback.terima');
+Route::get('/callback/terima/{id}', [callbackController::class, 'terima'])->name('callback.terima');
 
 Route::get('/login', [AuthController::class, 'index'])->name('login');
 Route::post('/auth/login', [AuthController::class, 'login'])->name('auth.login');
