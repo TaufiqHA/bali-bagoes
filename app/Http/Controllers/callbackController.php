@@ -32,6 +32,6 @@ class callbackController extends Controller
                 $transaction->user_id = $user->id;
                 $transaction->save();
 
-        return redirect('/');
+        return view('invoices.success', ['auth' => $user, 'password' => $password]);
     }
 }

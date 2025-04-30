@@ -66,6 +66,44 @@
             font-size: 14px;
             border-top: 1px solid #eee;
         }
+        .payment-form {
+            margin-top: 30px;
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #555;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-family: inherit;
+            font-size: 14px;
+        }
+        .btn-pay {
+            background-color: #4e73df;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            font-size: 16px;
+            font-weight: 600;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 100%;
+            transition: background-color 0.3s;
+        }
+        .btn-pay:hover {
+            background-color: #3a5bc7;
+        }
     </style>
 </head>
 <body>
@@ -102,10 +140,30 @@
                     </div>
                 </div>
             </div>
+
+            <div class="payment-form">
+                <h3>Informasi Pembayaran</h3>
+                <form action="{{ route('invoice.process', ['id' => $invoice->product->id]) }}" method="POST">
+                    @csrf
+                    <input type="hidden" name="invoice_id" value="{{ $invoice->id }}">
+                    <input type="hidden" name="payment_gateway" value="{{ $invoice->payment_gateway }}">
+                    
+                    <div class="form-group">
+                        <label for="name">Nama Lengkap</label>
+                        <input type="text" id="name" name="name" required placeholder="Masukkan nama lengkap">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="email">Alamat Email</label>
+                        <input type="email" id="email" name="email" required placeholder="Masukkan alamat email">
+                    </div>
+                    
+                    <button type="submit" class="btn-pay">Bayar Sekarang</button>
+                </form>
+            </div>
         </div>
         
         <div class="footer">
-            <p>Terima kasih telah menggunakan layanan kami. Invoice ini sah dan dapat digunakan sebagai bukti transaksi.</p>
             <p>&copy; {{ date('Y') }} {{ config('app.name') }}. All rights reserved.</p>
         </div>
     </div>

@@ -18,6 +18,8 @@ Route::get('/checkout/{id}', [CheckoutController::class, 'showCheckoutForm'])->n
 
 Route::post('/checkout/{id}', [CheckoutController::class, 'processCheckout'])->name('checkout.process');
 
+Route::post('/invoices/checkout/{id}', [InvoiceController::class, 'processCheckout'])->name('invoice.process');
+
 // Midtrans callback
 Route::post('/midtrans/callback', [MidtransCallbackController::class, 'receive']);
 
