@@ -27,6 +27,7 @@ class ManagePayment extends SettingsPage
                     ->options([
                         'midtrans'  => 'Midtrans',
                         'xendit'    => 'Xendit',
+                        'doku'    => 'Doku',
                         // …tambahkan sesuai kebutuhan
                     ])
                     ->required(),
