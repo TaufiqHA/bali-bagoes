@@ -2,13 +2,20 @@
 
 namespace App\Filament\Pages;
 
-use Filament\Pages\Page;
-use App\Models\Products;
-use Filament\Forms;
-use Barryvdh\DomPDF\Facade\Pdf;
-use Illuminate\Support\Facades\Storage;
 use ZipArchive;
+use Carbon\Carbon;
+use Filament\Forms;
+use App\Models\Invoice;
+use Filament\Forms\Set;
+use App\Models\Products;
+use Filament\Pages\Page;
+use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\URL;
+use Filament\Forms\Components\Select;
+use Illuminate\Support\Facades\Storage;
+use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
+use Filament\Forms\Components\DatePicker;
 
 class GenerateInvoice extends Page
 {
@@ -20,91 +27,133 @@ class GenerateInvoice extends Page
 
     public $product_id;
     public $jumlah_duplikat = 1;
+    public $jatuh_tempo;
+    public $payment_gateway;
     public $harga;
 
     protected function getFormSchema(): array
     {
         return [
-            Forms\Components\Select::make('product_id')
+            Select::make('product_id')
                 ->label('Pilih Produk')
-                ->options(Products::all()->pluck('name', 'id'))
+                ->options(Products::all()->pluck('name', 'id')) // Menggunakan relationship
                 ->searchable()
-                ->reactive()
-                ->afterStateUpdated(function ($state, callable $set) {
+                ->live() // Gunakan live() sebagai pengganti reactive()
+                ->afterStateUpdated(function ($state, Set $set) {
                     $product = Products::find($state);
-                    $set('harga', $product?->price);
+                    $set('transaksi', $product?->price ?? '0');
                 })
                 ->required(),
 
-            Forms\Components\TextInput::make('harga')
-                ->label('Harga')
-                ->disabled()
-                ->dehydrated(false),
+            // TextInput::make('transaksi')
+            //     ->label('Harga Produk')
+            //     ->disabled()
+            //     ->dehydrated(),
 
-            Forms\Components\TextInput::make('jumlah_duplikat')
+            TextInput::make('jumlah_duplikat')
                 ->label('Jumlah Duplikat')
                 ->numeric()
                 ->minValue(1)
                 ->default(1)
                 ->required(),
+                
+            // TextInput::make('office')
+            //     ->required()
+            //     ->disabled()
+            //     ->maxLength(255),
+                
+            // TextInput::make('partner')
+            //     ->required()
+            //     ->disabled()
+            //     ->maxLength(255),
+                
+            DatePicker::make('jatuh_tempo')
+                ->required()
+                ->native(false)
+                ->displayFormat('d/m/Y'),
+                
+            Select::make('payment_gateway')
+                ->required()
+                ->options([
+                    'doku' => 'Doku',
+                    'midtrans' => 'Midtrans',
+                    'xendit' => 'Xendit',
+                ]),
         ];
     }
 
     public function submit()
     {
+        
+        $quantity = $this->jumlah_duplikat ?? 1;
+        $createdRecords = collect();
         $product = Products::find($this->product_id);
 
-        if (!$product) {
-            Notification::make()
-                ->title('Produk tidak ditemukan')
-                ->danger()
-                ->send();
+        $data = [
+            'product_id' => $this->product_id,
+            'transaksi' => $product->price,
+            'office' => $product->fee_sell,
+            'partner' => $product->fee_partner,
+            'jatuh_tempo' => $this->jatuh_tempo,
+            'payment_gateway' => $this->payment_gateway,
+        ];
 
-            return;
+        // Buat konten TXT
+        $txtContent = "Daftar Link Invoice yang Digenerate\n";
+        $txtContent .= "Tanggal: " . now()->format('Y-m-d H:i:s') . "\n";
+        $txtContent .= "Jumlah Invoice: " . $quantity . "\n\n";
+
+        for ($i = 0; $i < $quantity; $i++) {
+            $recordData = $data;
+            $recordData['invoice'] = $this->generateInvoiceNumber();
+            
+            $expirationDate = Carbon::parse($this->jatuh_tempo);
+            $signedLink = URL::temporarySignedRoute(
+                'invoices.show',
+                $expirationDate,
+                ['invoice' => $recordData['invoice']]
+            );
+            
+            $recordData['signed_link'] = $signedLink;
+            $recordData['link_expires_at'] = $expirationDate;
+            
+            $createdRecords->push(Invoice::create($recordData));
+            
+            // Tambahkan ke konten TXT
+            $txtContent .= "Invoice #" . ($i+1) . ":\n";
+            $txtContent .= "Nomor Invoice: " . $recordData['invoice'] . "\n";
+            $txtContent .= "Link: " . $signedLink . "\n";
+            $txtContent .= "Berlaku hingga: " . $expirationDate->format('Y-m-d H:i:s') . "\n\n";
         }
 
-        $files = [];
+        // Simpan ke file TXT
+        $filename = 'invoice_links_' . now()->format('Ymd_His') . '.txt';
+        Storage::disk('local')->put('invoices/' . $filename, $txtContent);
 
-        for ($i = 1; $i <= $this->jumlah_duplikat; $i++) {
-            $pdf = Pdf::loadView('pdf.invoice', [
-                'product' => $product,
-                'no' => $i,
-            ]);
-
-            $fileName = 'invoice_' . now()->timestamp . "_$i.pdf";
-            $path = storage_path('app/invoices/' . $fileName);
-
-            // Pastikan folder ada
-            if (!file_exists(dirname($path))) {
-                mkdir(dirname($path), 0777, true);
-            }
-
-            file_put_contents($path, $pdf->output());
-
-            $files[] = $path;
-        }
-
-        if (count($files) == 1) {
-            return response()->download($files[0])->deleteFileAfterSend();
-        } else {
-            $zipFileName = 'invoices_' . now()->timestamp . '.zip';
-            $zipPath = storage_path('app/invoices/' . $zipFileName);
-            $zip = new ZipArchive();
-
-            $zip->open($zipPath, ZipArchive::CREATE | ZipArchive::OVERWRITE);
-
-            foreach ($files as $file) {
-                $zip->addFile($file, basename($file));
-            }
-            $zip->close();
-
-            // Hapus file PDF setelah dijadikan zip
-            foreach ($files as $file) {
-                unlink($file);
-            }
-
-            return response()->download($zipPath)->deleteFileAfterSend();
-        }
+        // Return response dengan link download
+        return response()->streamDownload(function () use ($txtContent) {
+            echo $txtContent;
+        }, $filename, [
+            'Content-Type' => 'text/plain',
+        ]);
     }
+
+    protected function generateInvoiceNumber(): string
+    {
+        $prefix = 'INVFR';
+        $latest = Invoice::where('invoice', 'like', $prefix.'%')
+                    ->orderBy('invoice', 'desc')
+                    ->first();
+        
+        if ($latest) {
+            $lastNumber = (int) str_replace($prefix, '', $latest->invoice);
+            $nextNumber = $lastNumber + 1;
+        } else {
+            $nextNumber = 1;
+        }
+        
+        return $prefix . str_pad($nextNumber, 5, '0', STR_PAD_LEFT);
+    }
+
 
 }
