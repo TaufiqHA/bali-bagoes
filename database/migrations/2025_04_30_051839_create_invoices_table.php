@@ -20,8 +20,8 @@ return new class extends Migration
             $table->string('partner');
             $table->date('jatuh_tempo');
             $table->string('payment_gateway');
-            $table->string('signed_link');
-            $table->timestamp('link_expires_at');
+            $table->string('signed_link')->nullable();
+            $table->timestamp('link_expires_at')->nullable();
             $table->string('status')->default('pending');
             $table->timestamps();
         });
