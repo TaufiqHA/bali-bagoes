@@ -30,24 +30,30 @@ class ProductsResource extends Resource
                 Forms\Components\TextInput::make('name')
                     ->required(),
                 Forms\Components\FileUpload::make('pictures')
+                    ->label('Gambar')
                     ->image()
                     ->directory('image'),
-                Forms\Components\Textarea::make('descriptions')
+                Forms\Components\Textarea::make('descriptions') 
+                    ->label('Deskripsi')
                     ->required()
                     ->columnSpanFull(),
                 Forms\Components\TextInput::make('price')
+                    ->label('Harga')
                     ->required()
                     ->numeric()
                     ->prefix('Rp'),
                 Forms\Components\TextInput::make('price_correct')
+                    ->label('Harga Coret')
                     ->required()
                     ->numeric()
                     ->prefix('Rp'),
                 Forms\Components\TextInput::make('fee_sell')
+                    ->label('Pendapatan Office')
                     ->required()
                     ->numeric()
                     ->prefix('Rp'),
                 Forms\Components\TextInput::make('fee_partner')
+                    ->label('Pendapatan Partner')
                     ->required()
                     ->numeric()
                     ->prefix('Rp'),
