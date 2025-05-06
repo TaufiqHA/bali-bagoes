@@ -2,16 +2,19 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\ProductsResource\Pages;
-use App\Filament\Resources\ProductsResource\RelationManagers;
-use App\Models\Products;
+use Closure;
 use Filament\Forms;
-use Filament\Forms\Form;
-use Filament\Resources\Resource;
 use Filament\Tables;
+use App\Models\Products;
+use Filament\Forms\Form;
 use Filament\Tables\Table;
+use Filament\Resources\Resource;
 use Illuminate\Database\Eloquent\Builder;
+use App\Filament\Resources\ProductsResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Pelmered\FilamentMoneyField\Forms\Components\MoneyInput;
+use App\Filament\Resources\ProductsResource\RelationManagers;
+use Filament\Forms\Components\TextInput;
 
 class ProductsResource extends Resource
 {
@@ -37,26 +40,106 @@ class ProductsResource extends Resource
                     ->label('Deskripsi')
                     ->required()
                     ->columnSpanFull(),
-                Forms\Components\TextInput::make('price')
+                MoneyInput::make('price')
                     ->label('Harga')
                     ->required()
-                    ->numeric()
-                    ->prefix('Rp'),
-                Forms\Components\TextInput::make('price_correct')
+                    ->decimals(0)
+                    ->prefix('Rp')
+                    ->extraAttributes([
+                        'x-data' => '{}',
+                        'x-init' => "
+                            let input = \$el;
+                            input.addEventListener('input', function() {
+                                let raw = input.value.replace(/[^0-9]/g, '');
+                                if (raw === '') return input.value = '';
+                                let formatted = new Intl.NumberFormat('id-ID').format(raw);
+                                input.value = formatted;
+                            });
+                        ",
+                        'inputmode' => 'numeric',
+                    ])
+                    ->formatStateUsing(fn ($state) => $state ? number_format($state, 0, ',', '.') : '')
+                    ->dehydrateStateUsing(fn ($state) => (int) preg_replace('/\D/', '', $state)),
+                MoneyInput::make('price_correct')
                     ->label('Harga Coret')
                     ->required()
-                    ->numeric()
-                    ->prefix('Rp'),
-                Forms\Components\TextInput::make('fee_sell')
+                    ->decimals(0)
+                    ->prefix('Rp')
+                    ->extraAttributes([
+                        'x-data' => '{}',
+                        'x-init' => "
+                            let input = \$el;
+                            input.addEventListener('input', function() {
+                                let raw = input.value.replace(/[^0-9]/g, '');
+                                if (raw === '') return input.value = '';
+                                let formatted = new Intl.NumberFormat('id-ID').format(raw);
+                                input.value = formatted;
+                            });
+                        ",
+                        'inputmode' => 'numeric',
+                    ])
+                    ->formatStateUsing(fn ($state) => $state ? number_format($state, 0, ',', '.') : '')
+                    ->dehydrateStateUsing(fn ($state) => (int) preg_replace('/\D/', '', $state)),
+                TextInput::make('fee_sell')
                     ->label('Pendapatan Office')
                     ->required()
                     ->numeric()
-                    ->prefix('Rp'),
-                Forms\Components\TextInput::make('fee_partner')
+                    ->prefix('%')
+                    ->extraAttributes([
+                        'x-data' => '{}',
+                        'x-init' => "
+                            let input = \$el;
+                            input.addEventListener('input', function() {
+                                let raw = input.value.replace(/[^0-9]/g, '');
+                                if (raw === '') return input.value = '';
+                                let formatted = new Intl.NumberFormat('id-ID').format(raw);
+                                input.value = formatted;
+                            });
+                        ",
+                        'inputmode' => 'numeric',
+                    ])
+                    ->formatStateUsing(function ($state, $get) {
+                        $priceCorrect = (int) preg_replace('/\D/', '', $get('price_correct') ?? 0);
+                        if ($priceCorrect > 0) {
+                            return number_format(($state / $priceCorrect) * 100, 0, ',', '.');
+                        }
+                        return $state;
+                    })
+                    ->dehydrateStateUsing(function ($state, $get) {
+                        $priceCorrect = (int) preg_replace('/\D/', '', $get('price_correct') ?? 0);
+                        $percentage = (int) preg_replace('/\D/', '', $state);
+                        return intval(($priceCorrect * $percentage) / 100);
+                    }),
+                TextInput::make('fee_partner')
                     ->label('Pendapatan Partner')
                     ->required()
                     ->numeric()
-                    ->prefix('Rp'),
+                    ->prefix('%')
+                    ->extraAttributes([
+                        'x-data' => '{}',
+                        'x-init' => "
+                            let input = \$el;
+                            input.addEventListener('input', function() {
+                                let raw = input.value.replace(/[^0-9]/g, '');
+                                if (raw === '') return input.value = '';
+                                let formatted = new Intl.NumberFormat('id-ID').format(raw);
+                                input.value = formatted;
+                            });
+                        ",
+                        'inputmode' => 'numeric',
+                    ])
+                    ->formatStateUsing(function ($state, $get) {
+                        $priceCorrect = (int) preg_replace('/\D/', '', $get('price_correct') ?? 0);
+                        if ($priceCorrect > 0) {
+                            return number_format(($state / $priceCorrect) * 100, 0, ',', '.');
+                        }
+                        return $state;
+                    })
+                    ->dehydrateStateUsing(function ($state, $get) {
+                        $priceCorrect = (int) preg_replace('/\D/', '', $get('price_correct') ?? 0);
+                        $percentage = (int) preg_replace('/\D/', '', $state);
+                        return intval(($priceCorrect * $percentage) / 100);
+                    }),
                 Forms\Components\FileUpload::make('file')
                     ->required(),
             ])
@@ -77,11 +160,11 @@ class ProductsResource extends Resource
                     ->money('idr')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('fee_sell')
-                    ->label('Fee Jual')
+                    ->label('Pendapatan Office')
                     ->money('idr')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('fee_partner')
-                    ->label('Fee Partner')
+                    ->label('Pendapatan Partner')
                     ->money('idr')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')

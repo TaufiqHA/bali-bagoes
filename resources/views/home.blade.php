@@ -37,7 +37,7 @@
             rel="stylesheet"
         />
         <link
-            rel="stylesheet"
+            rel="stylesheet"    
             href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.min.css"
         />
         <style>
