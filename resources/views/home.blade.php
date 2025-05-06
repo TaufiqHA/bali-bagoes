@@ -98,9 +98,12 @@
                             {{ $product->descriptions }}
                         </p>
                         <div class="flex justify-between items-center">
-                            <span class="text-lg font-bold text-primary"
-                                >Rp {{ number_format($product->price, 0, ',', '.') }}</span
-                            >
+                            <div class="flex flex-col">
+                                <span class="text-sm text-gray-500 line-through">Rp. {{ number_format($product->price_correct, 0, ',', '.') }}</span>
+                                <span class="text-lg font-bold text-primary"
+                                    >Rp {{ number_format($product->price, 0, ',', '.') }}</span
+                                >
+                            </div>
                             <a
                                 href="{{ route('checkout', ['id' => $product->id]) }}"
                                 class="bg-primary hover:bg-blue-600 text-white px-5 py-2 !rounded-button whitespace-nowrap flex items-center"

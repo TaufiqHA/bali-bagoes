@@ -99,14 +99,14 @@ class ProductsResource extends Resource
                         'inputmode' => 'numeric',
                     ])
                     ->formatStateUsing(function ($state, $get) {
-                        $priceCorrect = (int) preg_replace('/\D/', '', $get('price_correct') ?? 0);
+                        $priceCorrect = (int) preg_replace('/\D/', '', $get('price') ?? 0);
                         if ($priceCorrect > 0) {
                             return number_format(($state / $priceCorrect) * 100, 0, ',', '.');
                         }
                         return $state;
                     })
                     ->dehydrateStateUsing(function ($state, $get) {
-                        $priceCorrect = (int) preg_replace('/\D/', '', $get('price_correct') ?? 0);
+                        $priceCorrect = (int) preg_replace('/\D/', '', $get('price') ?? 0);
                         $percentage = (int) preg_replace('/\D/', '', $state);
                         return intval(($priceCorrect * $percentage) / 100);
                     }),
@@ -129,14 +129,14 @@ class ProductsResource extends Resource
                         'inputmode' => 'numeric',
                     ])
                     ->formatStateUsing(function ($state, $get) {
-                        $priceCorrect = (int) preg_replace('/\D/', '', $get('price_correct') ?? 0);
+                        $priceCorrect = (int) preg_replace('/\D/', '', $get('price') ?? 0);
                         if ($priceCorrect > 0) {
                             return number_format(($state / $priceCorrect) * 100, 0, ',', '.');
                         }
                         return $state;
                     })
                     ->dehydrateStateUsing(function ($state, $get) {
-                        $priceCorrect = (int) preg_replace('/\D/', '', $get('price_correct') ?? 0);
+                        $priceCorrect = (int) preg_replace('/\D/', '', $get('price') ?? 0);
                         $percentage = (int) preg_replace('/\D/', '', $state);
                         return intval(($priceCorrect * $percentage) / 100);
                     }),
