@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Order;
+use App\Models\PaymentGatewaySetting;
 use GuzzleHttp\Client;
 use App\Models\Invoice;
 use App\Models\Products;
@@ -32,7 +33,8 @@ class CheckoutController extends Controller
         ]);
 
         $product = Products::findOrFail($productId);
-        $gateway = app(PaymentSettings::class)->gateway;
+        $gateway = PaymentGatewaySetting::where('is_set', true)->first()->gateway_name;
+        // $gateway = app(PaymentSettings::class)->gateway;
 
         $orderId = 'ORDER-' . time() . '-' . Str::random(10);
 

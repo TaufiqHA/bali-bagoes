@@ -52,7 +52,9 @@ class PaymentGatewaySettingResource extends Resource
                             ->live(),
                         Forms\Components\Toggle::make('is_active')
                             ->required(),
-                    ])->columns(2),
+                        Forms\Components\Toggle::make('is_set')
+                            ->required(),
+                    ])->columns(3),
                 
                 Forms\Components\Section::make('Sandbox Environment Settings')
                     ->schema([
@@ -88,8 +90,8 @@ class PaymentGatewaySettingResource extends Resource
                     ->label('Payment Gateway'),
                 Tables\Columns\IconColumn::make('is_active')
                     ->boolean(),
-                Tables\Columns\IconColumn::make('use_sandbox')
-                    ->boolean(),
+                Tables\Columns\ToggleColumn::make('use_sandbox'),
+                Tables\Columns\ToggleColumn::make('is_set'),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()

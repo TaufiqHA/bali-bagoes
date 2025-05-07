@@ -41,6 +41,7 @@ return new class extends Migration
             
             $table->boolean('is_active')->default(false);
             $table->boolean('use_sandbox')->default(true);
+            $table->boolean('is_set')->default(false);
             $table->timestamps();
         });
     }

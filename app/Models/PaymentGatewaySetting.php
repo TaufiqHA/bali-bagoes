@@ -33,6 +33,7 @@ class PaymentGatewaySetting extends Model
         'sandbox_additional_settings',
         'production_additional_settings',
         'is_active',
+        'is_set',
         'use_sandbox'
     ];
 
