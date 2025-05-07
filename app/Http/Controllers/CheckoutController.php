@@ -63,18 +63,18 @@ class CheckoutController extends Controller
 
     protected function generateInvoiceNumber(): string
     {
-        $prefix = 'INVFR';
-        $latest = Invoice::where('invoice', 'like', $prefix.'%')
-                    ->orderBy('invoice', 'desc')
-                    ->first();
-        
-        if ($latest) {
-            $lastNumber = (int) str_replace($prefix, '', $latest->invoice);
-            $nextNumber = $lastNumber + 1;
-        } else {
-            $nextNumber = 1;
-        }
-        
-        return $prefix . str_pad($nextNumber, 5, '0', STR_PAD_LEFT);
+        $prefix = 'INV'; // Awalan tetap
+        $length = 8; // Panjang total (INV + 5 karakter acak = 8)
+        $characters = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; // Huruf dan angka (hindari karakter ambigu)
+
+        do {
+            $randomString = '';
+            for ($i = 0; $i < $length - strlen($prefix); $i++) {
+                $randomString .= $characters[rand(0, strlen($characters) - 1)];
+            }
+            $invoiceNumber = $prefix . $randomString; // Contoh: INVA3B7X9
+        } while (Invoice::where('invoice', $invoiceNumber)->exists()); // Cek unik
+
+        return $invoiceNumber;
     }
 }
