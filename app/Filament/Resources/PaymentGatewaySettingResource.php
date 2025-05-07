@@ -31,37 +31,53 @@ class PaymentGatewaySettingResource extends Resource
                 Forms\Components\TextInput::make('gateway_name')
                     ->label('Payment Gateway')
                     ->required(),
-                Forms\Components\TextInput::make('production_merchant_id'),
-                Forms\Components\TextInput::make('production_client_id'),
-                Forms\Components\TextInput::make('production_client_key'),
-                Forms\Components\TextInput::make('production_server_key'),
-                Forms\Components\TextInput::make('production_secret_key'),
-                Forms\Components\TextInput::make('production_public_key'),
-                Forms\Components\TextInput::make('production_merchant_key'),
-                Forms\Components\TextInput::make('production_api_key'),
-                Forms\Components\Toggle::make('use_sandbox')
-                    ->required()
-                    ->live(),
-                Forms\Components\TextInput::make('sandbox_merchant_id')
+                    Forms\Components\Section::make('Production Environment Settings')
+                    ->schema([
+                        Forms\Components\TextInput::make('production_merchant_id'),
+                        Forms\Components\TextInput::make('production_client_id'),
+                        Forms\Components\TextInput::make('production_client_key'),
+                        Forms\Components\TextInput::make('production_server_key'),
+                        Forms\Components\TextInput::make('production_secret_key'),
+                        Forms\Components\TextInput::make('production_public_key'),
+                        Forms\Components\TextInput::make('production_private_key'),
+                        Forms\Components\TextInput::make('production_merchant_key'),
+                        Forms\Components\TextInput::make('production_api_key'),
+                    ])
+                    ->columns(2),
+
+                Forms\Components\Section::make('Status')
+                    ->schema([
+                        Forms\Components\Toggle::make('use_sandbox')
+                            ->required()
+                            ->live(),
+                        Forms\Components\Toggle::make('is_active')
+                            ->required(),
+                    ])->columns(2),
+                
+                Forms\Components\Section::make('Sandbox Environment Settings')
+                    ->schema([
+                        Forms\Components\TextInput::make('sandbox_merchant_id')
+                            ->hidden(fn (Get $get): bool => ! $get('use_sandbox')),
+                        Forms\Components\TextInput::make('sandbox_client_id')
+                            ->hidden(fn (Get $get): bool => ! $get('use_sandbox')),
+                        Forms\Components\TextInput::make('sandbox_client_key')
+                            ->hidden(fn (Get $get): bool => ! $get('use_sandbox')),
+                        Forms\Components\TextInput::make('sandbox_server_key')
+                            ->hidden(fn (Get $get): bool => ! $get('use_sandbox')),
+                        Forms\Components\TextInput::make('sandbox_secret_key')
+                            ->hidden(fn (Get $get): bool => ! $get('use_sandbox')),
+                        Forms\Components\TextInput::make('sandbox_public_key')
+                            ->hidden(fn (Get $get): bool => ! $get('use_sandbox')),
+                        Forms\Components\TextInput::make('sandbox_private_key')
+                            ->hidden(fn (Get $get): bool => ! $get('use_sandbox')),
+                        Forms\Components\TextInput::make('sandbox_merchant_key')
+                            ->hidden(fn (Get $get): bool => ! $get('use_sandbox')),
+                        Forms\Components\TextInput::make('sandbox_api_key')
+                            ->hidden(fn (Get $get): bool => ! $get('use_sandbox')),
+                    ])
+                    ->columns(2)
                     ->hidden(fn (Get $get): bool => ! $get('use_sandbox')),
-                Forms\Components\TextInput::make('sandbox_client_id')
-                    ->hidden(fn (Get $get): bool => ! $get('use_sandbox')),
-                Forms\Components\TextInput::make('sandbox_client_key')
-                    ->hidden(fn (Get $get): bool => ! $get('use_sandbox')),
-                Forms\Components\TextInput::make('sandbox_server_key')
-                    ->hidden(fn (Get $get): bool => ! $get('use_sandbox')),
-                Forms\Components\TextInput::make('sandbox_secret_key')
-                    ->hidden(fn (Get $get): bool => ! $get('use_sandbox')),
-                Forms\Components\TextInput::make('sandbox_public_key')
-                    ->hidden(fn (Get $get): bool => ! $get('use_sandbox')),
-                Forms\Components\TextInput::make('sandbox_merchant_key')
-                    ->hidden(fn (Get $get): bool => ! $get('use_sandbox')),
-                Forms\Components\TextInput::make('sandbox_api_key')
-                    ->hidden(fn (Get $get): bool => ! $get('use_sandbox')),
-                Forms\Components\Toggle::make('is_active')
-                    ->required(),
-            ])
-            ->columns(1);
+                ]);
     }
 
     public static function table(Table $table): Table

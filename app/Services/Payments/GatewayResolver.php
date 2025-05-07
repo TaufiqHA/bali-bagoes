@@ -15,6 +15,7 @@ class GatewayResolver
             'Xendit' => new XenditGateway(),
             'Doku' => new DokuGateway(),
             'Duitku' => new DuitkuGateway(),
+            'Tripay' => new TripayGateway(),
             default => throw new \Exception("Unsupported gateway: {$gateway}"),
         };
     }
