@@ -106,22 +106,17 @@ class GenerateInvoice extends Page implements HasForms
 
         for ($i = 0; $i < $quantity; $i++) {
             $recordData = $data;
-            $recordData['invoice'] = $this->generateInvoiceNumber();
-
-            $expirationDate = Carbon::parse($this->data['jatuh_tempo']);
-            $signedLink = URL::temporarySignedRoute(
-                'invoices.show',
-                $expirationDate,
-                ['invoice' => $recordData['invoice']]
-            );
-
-            $recordData['signed_link'] = $signedLink;
-            $recordData['link_expires_at'] = $expirationDate;
-
-            $createdRecords->push(Invoice::create($recordData));
-
-            $txtContent .= $signedLink . "\n\n";
-        }
+            $invoiceNumber = $this->generateRandomInvoiceNumber(); // Contoh: INVAB123
+            $recordData['invoice'] = $invoiceNumber;
+    
+            // Simpan ke database
+            $invoice = Invoice::create($recordData);
+            $createdRecords->push($invoice);
+    
+            // Generate URL pendek (tanpa signed)
+            $plainUrl = url("/invoices/" . substr($invoiceNumber, 3)); // Hapus "INV" => AB123
+            $txtContent .= $plainUrl . "\n\n";
+        }    
 
         $filename = 'invoice_links_' . now()->format('Ymd_His') . '.txt';
         Storage::disk('local')->put('invoices/' . $filename, $txtContent);
@@ -132,16 +127,20 @@ class GenerateInvoice extends Page implements HasForms
             'Content-Type' => 'text/plain',
         ]);
     }
-
-    protected function generateInvoiceNumber(): string
+    protected function generateRandomInvoiceNumber(): string
     {
-        $prefix = 'INVFR';
-        $latest = Invoice::where('invoice', 'like', $prefix.'%')
-                    ->orderBy('invoice', 'desc')
-                    ->first();
+        $prefix = 'INV'; // Awalan tetap
+        $length = 8; // Panjang total (INV + 5 karakter acak = 8)
+        $characters = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; // Huruf dan angka (hindari karakter ambigu)
 
-        $nextNumber = $latest ? ((int) str_replace($prefix, '', $latest->invoice) + 1) : 1;
+        do {
+            $randomString = '';
+            for ($i = 0; $i < $length - strlen($prefix); $i++) {
+                $randomString .= $characters[rand(0, strlen($characters) - 1)];
+            }
+            $invoiceNumber = $prefix . $randomString; // Contoh: INVA3B7X9
+        } while (Invoice::where('invoice', $invoiceNumber)->exists()); // Cek unik
 
-        return $prefix . str_pad($nextNumber, 5, '0', STR_PAD_LEFT);
+        return $invoiceNumber;
     }
 }

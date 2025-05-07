@@ -37,4 +37,4 @@ Route::get('/download/{product:id}', [ClientController::class, 'download'])->mid
 
 Route::get('/invoices/{invoice}', [InvoiceController::class, 'show'])
     ->name('invoices.show')
-    ->middleware('signed');
+    ->where('code', '[A-Z0-9]+'); // Terima huruf dan angka

@@ -17,14 +17,16 @@ use App\Services\Payments\GatewayResolver;
 
 class InvoiceController extends Controller
 {
-    public function show(Request $request, $invoiceNumber)
+    public function show($invoice_id) // $invoice_id hanya angka (contoh: 1234)
     {
-        if (!$request->hasValidSignature()) {
-            abort(403, 'Link invoice telah kadaluwarsa');
+        // Gabungkan dengan prefix "INV" untuk cek database
+        $invoice = Invoice::where('invoice', 'INV' . $invoice_id)->firstOrFail();
+
+        // Cek kadaluarsa (opsional, jika pakai database-based expiry)
+        if (isset($invoice->jatuh_tempo) && now()->gt($invoice->jatuh_tempo)) {
+            abort(404, "Link sudah kadaluarsa");
         }
-        
-        $invoice = Invoice::where('invoice', $invoiceNumber)->firstOrFail();
-        
+
         return view('invoices.show', compact('invoice'));
     }
 
