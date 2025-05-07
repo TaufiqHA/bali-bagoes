@@ -61,7 +61,7 @@
         <nav class="w-full bg-white shadow-sm py-4 fixed top-0 z-50">
             <div class="container mx-auto px-4 md:px-8 max-w-6xl">
                 <a href="/" class="text-2xl font-['Pacifico'] text-primary"
-                    >BaliBagoes</a
+                    >{{ $data['brand'] }}</a
                 >
             </div>
         </nav>
@@ -70,11 +70,10 @@
         >
             <div class="container mx-auto px-4 md:px-8 max-w-6xl">
                 <h1 class="text-4xl md:text-5xl font-bold mb-4">
-                    Tingkatkan Keterampilan Anda dengan Produk Digital Premium
+                    {{ $data['heading'] }}
                 </h1>
                 <p class="text-xl md:text-2xl max-w-2xl">
-                    Koleksi ebook dan software terbaik untuk membantu Anda
-                    berkembang dalam karir dan bisnis digital.
+                    {{ $data['description'] }}
                 </p>
             </div>
         </header>
@@ -121,5 +120,46 @@
                 @endforeach
             </div>
         </main>
+        <footer class="bg-gray-800 text-white pt-16 pb-8">
+            <div class="max-w-7xl mx-auto px-6">
+              <div class="max-w-lg mx-auto text-center">
+                <a
+                  href="#"
+                  class="text-white text-3xl font-['Pacifico'] mb-4 inline-block"
+                  >{{ $data['brand'] }}</a
+                >
+                <p class="text-gray-400 mb-8">
+                  {{ $data['description'] }}
+                </p>
+                {{-- <div class="flex justify-center space-x-6">
+                  <a href="#" class="text-gray-400 hover:text-white">
+                    <div class="w-10 h-10 flex items-center justify-center">
+                      <i class="ri-facebook-fill ri-lg"></i>
+                    </div>
+                  </a>
+                  <a href="#" class="text-gray-400 hover:text-white">
+                    <div class="w-10 h-10 flex items-center justify-center">
+                      <i class="ri-instagram-fill ri-lg"></i>
+                    </div>
+                  </a>
+                  <a href="#" class="text-gray-400 hover:text-white">
+                    <div class="w-10 h-10 flex items-center justify-center">
+                      <i class="ri-twitter-x-fill ri-lg"></i>
+                    </div>
+                  </a>
+                  <a href="#" class="text-gray-400 hover:text-white">
+                    <div class="w-10 h-10 flex items-center justify-center">
+                      <i class="ri-linkedin-fill ri-lg"></i>
+                    </div>
+                  </a>
+                </div> --}}
+                <div class="mt-8 pt-8 border-t border-gray-700">
+                  <p class="text-gray-400">
+                    &copy; 2025 BaliPages. Hak Cipta Dilindungi.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </footer>
     </body>
 </html>
