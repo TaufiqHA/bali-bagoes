@@ -11,9 +11,10 @@ class GatewayResolver
     public static function resolve(string $gateway): PaymentGatewayInterface
     {
         return match ($gateway) {
-            'midtrans' => new MidtransGateway(),
-            'xendit' => new XenditGateway(),
-            'doku' => new DokuGateway(),
+            'Midtrans' => new MidtransGateway(),
+            'Xendit' => new XenditGateway(),
+            'Doku' => new DokuGateway(),
+            'Duitku' => new DuitkuGateway(),
             default => throw new \Exception("Unsupported gateway: {$gateway}"),
         };
     }

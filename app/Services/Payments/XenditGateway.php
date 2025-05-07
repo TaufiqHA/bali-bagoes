@@ -8,6 +8,7 @@ use App\Models\Products;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Xendit\Invoice\InvoiceApi;
+use App\Models\PaymentGatewaySetting;
 use App\Services\Payments\PaymentGatewayInterface;
 
 class XenditGateway implements PaymentGatewayInterface
@@ -16,7 +17,19 @@ class XenditGateway implements PaymentGatewayInterface
 
     public function __construct()
     {
-        \Xendit\Configuration::setXenditKey(config('services.xendit.secret_key'));
+        // Get Xendit settings from database
+        $xenditSettings = PaymentGatewaySetting::forGateway('Xendit');
+        
+        if (!$xenditSettings || !$xenditSettings->is_active) {
+            throw new \Exception('Xendit payment gateway is not configured or inactive');
+        }
+
+        // Set the appropriate keys based on environment
+        $apiKey = $xenditSettings->use_sandbox 
+            ? $xenditSettings->sandbox_secret_key 
+            : $xenditSettings->production_secret_key;
+
+        \Xendit\Configuration::setXenditKey($apiKey);
         $this->invoiceApi = new InvoiceApi();
     }
 

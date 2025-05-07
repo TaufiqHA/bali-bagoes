@@ -2,6 +2,7 @@
 
 namespace App\Filament\Pages;
 
+use App\Models\PaymentGatewaySetting;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Pages\SettingsPage;
@@ -14,7 +15,7 @@ class ManagePayment extends SettingsPage
 
     protected static string $settings = PaymentSettings::class;
 
-    protected static ?string $navigationGroup = 'Settiings';
+    protected static ?string $navigationGroup = 'Settings';
 
     protected static ?int $navigationSort = 1;
 
@@ -24,12 +25,7 @@ class ManagePayment extends SettingsPage
             ->schema([
                 Select::make('gateway')
                     ->label('Pilih Payment Gateway')
-                    ->options([
-                        'midtrans'  => 'Midtrans',
-                        'xendit'    => 'Xendit',
-                        'doku'    => 'Doku',
-                        // …tambahkan sesuai kebutuhan
-                    ])
+                    ->options(PaymentGatewaySetting::all()->pluck('gateway_name', 'gateway_name'))
                     ->required(),
 
             ]);
