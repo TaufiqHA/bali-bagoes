@@ -7,6 +7,7 @@ use ZipArchive;
 use Carbon\Carbon;
 use Filament\Forms;
 use App\Models\Invoice;
+use App\Models\PaymentGatewaySetting;
 use Filament\Forms\Set;
 use App\Models\Products;
 use Filament\Forms\Form;
@@ -79,11 +80,7 @@ class GenerateInvoice extends Page implements HasForms
 
                 Select::make('payment_gateway')
                     ->required()
-                    ->options([
-                        'doku' => 'Doku',
-                        'midtrans' => 'Midtrans',
-                        'xendit' => 'Xendit',
-                    ]),
+                    ->options(PaymentGatewaySetting::all()->pluck('gateway_name', 'gateway_name')),
             ])
             ->statePath('data');
     }
