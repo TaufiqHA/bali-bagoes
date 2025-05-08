@@ -36,7 +36,7 @@ class ProductsResource extends Resource
                     ->label('Gambar')
                     ->image()
                     ->directory('image'),
-                Forms\Components\Textarea::make('descriptions') 
+                Forms\Components\RichEditor::make('descriptions') 
                     ->label('Deskripsi')
                     ->required()
                     ->columnSpanFull(),

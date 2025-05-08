@@ -137,7 +137,7 @@
                             {{ $product->name }}
                         </h2>
                         <p class="text-gray-600 mb-4">
-                            {{ Str::limit($product->descriptions, 70) }}
+                            {!! Str::limit($product->descriptions, 70) !!}
                         </p>
                         <div class="flex flex-col justify-between">
                             <div class="flex flex-col">
@@ -180,7 +180,7 @@
                             class="w-full object-cover object-top mb-4 rounded"
                         />
                         <div class="mb-4">
-                            {{ $product->descriptions }}
+                            {!! $product->descriptions !!}
                         </div>
                         <div class="flex items-center mb-6">
                             <span class="text-gray-400 line-through mr-2"
