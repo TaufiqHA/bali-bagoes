@@ -136,9 +136,6 @@
                         >
                             {{ $product->name }}
                         </h2>
-                        <p class="text-gray-600 mb-4">
-                            {!! Str::limit($product->descriptions, 70) !!}
-                        </p>
                         <div class="flex flex-col justify-between">
                             <div class="flex flex-col">
                                 <span class="text-sm text-gray-500 line-through"
