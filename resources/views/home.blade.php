@@ -95,6 +95,11 @@
                 float: right;
                 z-index: 51;
             }
+
+            figcaption {
+                display: none;
+            }
+
         </style>
     </head>
     <body class="bg-gray-50">
