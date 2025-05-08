@@ -29,6 +29,8 @@ class HomepageSettings extends SettingsPage
                     ->label('Nama Brand'),
                 TextInput::make('heading')
                     ->label('Header'),
+                TextInput::make('whatsapp')
+                    ->label('Whatsapp'),
                 Textarea::make('description')
                     ->label('Deskripsi')
             ])

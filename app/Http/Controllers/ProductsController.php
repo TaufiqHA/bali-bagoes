@@ -15,6 +15,7 @@ class ProductsController extends Controller
             'brand' => app(PageSettings::class)->brand,
             'heading' => app(PageSettings::class)->heading,
             'description' => app(PageSettings::class)->description,
+            'whatsapp' => app(PageSettings::class)->whatsapp,
         ];
         return view('home', ['products' => $products, 'data' => $data]);
     }

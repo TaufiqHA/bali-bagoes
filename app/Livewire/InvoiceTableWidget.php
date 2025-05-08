@@ -48,8 +48,12 @@ class InvoiceTableWidget extends Component implements HasForms, HasTable
             $query->where('payment_gateway', $filters['payment_gateway']['value']);
         }
 
-        if (!empty($filters['created_at']['date'] ?? null)) {
-            $query->whereDate('created_at', Carbon::parse($filters['created_at']['date']));
+        if (!empty($filters['created_at']['from'] ?? null)) {
+            $query->whereDate('created_at', '>=', Carbon::parse($filters['created_at']['from']));
+        }
+        
+        if (!empty($filters['created_at']['to'] ?? null)) {
+            $query->whereDate('created_at', '<=', Carbon::parse($filters['created_at']['to']));
         }
 
         $filtered = $query->get();
@@ -114,15 +118,23 @@ class InvoiceTableWidget extends Component implements HasForms, HasTable
                     ),
 
                 Filter::make('created_at')
-                    ->label('Tanggal')
+                    ->label('Rentang Tanggal')
                     ->form([
-                        DatePicker::make('date')->label('Tanggal'),
+                        DatePicker::make('from')->label('Dari Tanggal'),
+                        DatePicker::make('to')->label('Sampai Tanggal'),
                     ])
-                    ->query(fn (Builder $query, array $data) =>
-                        $query->when($data['date'], fn ($q, $date) =>
-                            $q->whereDate('created_at', Carbon::parse($date))
-                        )
-                    ),
+                    ->columnSpan(2)
+                    ->columns(2)
+                    ->query(function (Builder $query, array $data) {
+                        return $query
+                            ->when(
+                                $data['from'],
+                                fn ($query, $from) => $query->whereDate('created_at', '>=', Carbon::parse($from)))
+                            ->when(
+                                $data['to'],
+                                fn ($query, $to) => $query->whereDate('created_at', '<=', Carbon::parse($to))
+                            );
+                    })
             ], layout: \Filament\Tables\Enums\FiltersLayout::AboveContent);
     }
 

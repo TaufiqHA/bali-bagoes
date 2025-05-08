@@ -10,6 +10,7 @@ use Xendit\Configuration;
 use App\Models\Transaction;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use App\Settings\PageSettings;
 use Xendit\Invoice\InvoiceApi;
 use App\Settings\PaymentSettings;
 use App\Models\PaymentGatewaySetting;
@@ -27,7 +28,14 @@ class InvoiceController extends Controller
             abort(404, "Link sudah kadaluarsa");
         }
 
-        return view('invoices.show', compact('invoice'));
+        $data = [
+            'brand' => app(PageSettings::class)->brand,
+            'heading' => app(PageSettings::class)->heading,
+            'description' => app(PageSettings::class)->description,
+            'whatsapp' => app(PageSettings::class)->whatsapp,
+        ];
+
+        return view('invoices.show', compact('invoice', 'data'));
     }
 
     public function processCheckout(Request $request, $productId)

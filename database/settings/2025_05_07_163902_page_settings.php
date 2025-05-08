@@ -8,6 +8,7 @@ return new class extends SettingsMigration
     {
         $this->migrator->add('page.brand', 'Ebook Master');
         $this->migrator->add('page.heading', 'Tingkatkan Keterampilan Anda dengan Produk Digital Premium');
+        $this->migrator->add('page.whatsapp', '081234567890');
         $this->migrator->add('page.description', 'Koleksi ebook dan software terbaik untuk membantu Anda berkembang dalam karir dan bisnis digital.');
     }
 };

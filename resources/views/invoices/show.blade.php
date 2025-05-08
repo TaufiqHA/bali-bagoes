@@ -24,6 +24,19 @@
             margin-top: 40px;
             margin-bottom: 30px;
         }
+        .brand {
+            text-align: center;
+            font-size: 20px;
+            font-weight: bold;
+            margin-top: 30px;
+            margin-bottom: 20px;
+        }
+        .contact {
+            text-align: center;
+            font-size: 15px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
         .box {
             background-color: #1c1b47;
             padding: 20px;
@@ -75,11 +88,13 @@
 <body>
     <div class="container">
         <div class="title">PEMBAYARAN</div>
+        <h3 class="brand">{{ $data['brand'] }}</h3>
+        <p class="contact">whatsapp : {{ $data['whatsapp'] }}</p>
 
         <div class="box">
             <h4>RINGKASAN PESANAN</h4>
             <p>No Invoice: <span class="invoice-value">{{ $invoice->invoice }}</span></p>
-            <p>Data Transaksi</p>
+            <p>Data Transaksi: <span class="invoice-value">{{ $invoice->product->name }}</span> </p>
             <p>Total: <span class="invoice-value">Rp {{ number_format($invoice->transaksi, 0, ',', '.') }}</span></p>
         </div>
 
@@ -92,8 +107,9 @@
 
                 <div class="form-group">
                     <label for="name">Nama</label>
-                    <input type="text" id="name" name="name" required placeholder="Masukkan nama lengkap">
-                </div>
+                    <input type="text" id="name" name="name" required 
+                    placeholder="Masukkan nama lengkap"
+                    onkeypress="return /[a-zA-Z\s]/i.test(event.key)">                </div>
 
                 <div class="form-group">
                     <label for="email">Email</label>
