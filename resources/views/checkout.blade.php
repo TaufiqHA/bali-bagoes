@@ -96,9 +96,9 @@
                                 ></h3>
                                 <p
                                     id="productDescription"
-                                    class="text-gray-600 text-sm mb-3"
+                                    class="text-gray-600 text-lg mb-3 font-bold"
                                 >
-                                    {{ $product->descriptions }}
+                                    {{ $product->name }}
                                 </p>
                                 <p
                                     id="productPrice"
